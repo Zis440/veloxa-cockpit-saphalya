@@ -1,0 +1,79 @@
+Hi,
+
+Welcome to the Hiyaku Systems Hackathon. This year's challenge is the Veloxa CXO Cockpit. Your 5-day clock starts now: Monday, 16 November 2026, 10:00 AM IST. It ends with your repository submission on Friday, 20 November, 6:00 PM IST.
+
+ℹ️ About Veloxa: Veloxa Technologies is a synthetic company created for this hackathon. Its people, emails, transcripts and data are all fictional, and it isn't a Hiyaku Systems client or partner. Please don't look for it online or treat any of the material as real. Everything you need is in the attached zip.
+This is a compressed, harder version of the challenge. You have five days and a big scope. We aren't expecting a finished product. We're looking at how you prioritise, what you choose to trust and how well you defend your decisions.
+
+⏰ Key deadlines (IST)
+
+• Mon 16 Nov, 11:59 PM: share your repo link and commit ARCHITECTURE.md
+• Fri 20 Nov, 6:00 PM: CODE FREEZE and final submission, by reply to this email
+
+1. Attached: Veloxa_Hackathon_Release_Packs.zip
+You're getting every material up front, in one zip with a folder for each day.
+
+Folder	Transcripts	Data room
+Day1_Mon_16Nov	T1 (CEO kickoff call)
+T2 (CFO call)	Candidate brief, README, Employee Master, GL export, payroll register, board updates, email threads, templates
+Day2_Tue_17Nov	T3 (Head of People call)
+T6a (CEO voice note)	Leave register, hiring tracker, pulse survey, a resignation letter, email threads
+Day3_Wed_18Nov	T4 (Head of Marketing call)
+T5 (VP Engineering call)
+T6b (CEO voice note)	Engineering exports (Jira, git log, incidents, on-call rota), launch kit, an invoice, email threads, printable copy of all emails
+Day4_Thu_19Nov	T6c, T6d (CEO voice notes)	None
+2. Your Git repository
+Create a public repository today (GitHub, GitLab or Bitbucket), named veloxa-cockpit-[your-name].
+Reply to this email by Mon 16 Nov, 11:59 PM IST with your repo link, so we can follow your commit history from the start.
+Commit at least twice a day, with messages a teammate could follow. We read the full history, and one large upload at the end will count against you.
+Code freeze: Fri 20 Nov, 6:00 PM IST. Commits after that won't be assessed.
+📤 Final submission: by Fri 20 Nov, 6:00 PM IST, reply to this email with:
+
+Your repository link
+The commit hash of your final frozen commit (made on or before Fri 20 Nov, 6:00 PM)
+The one command that sets up and runs your project from a fresh clone
+Late or incomplete submissions may not be assessed.
+
+3. The 5-day timeline (all times IST)
+There are no live sessions during the week. You work independently, and we assess your submission at the end.
+
+Day	Treat as released at 10:00 AM	Due by 11:59 PM
+Mon 16 Nov	Day1_Mon_16Nov (kickoff)	Repo link shared, ARCHITECTURE.md committed
+Tue 17 Nov	Day2_Tue_17Nov	Response to voice note T6a
+Wed 18 Nov	Day3_Wed_18Nov	Response to voice note T6b
+Thu 19 Nov	Day4_Thu_19Nov	Responses to voice notes T6c and T6d
+Fri 20 Nov	Nothing new	CODE FREEZE and submission by 6:00 PM
+4. Must-haves (all required)
+Data model: all four day folders loaded into a model you design and reconciled with the transcripts. When sources conflict, record which one you believed and why.
+14 people as AI agents: each one grounded in the data, with a role, workload, history and a personal life. Agents must stay consistent with the records, and anything you invent must be logged as an assumption.
+Cockpit: the CEO asks one question and gets a short answer that:
+cites the specific records behind it
+states a confidence level
+says "I don't know" or "the sources disagree" when that's the honest answer
+"What should I worry about" view: a ranked list, with each item backed by evidence.
+Point-in-time answers: "what did we know on date X?", using the release dates above. Later material must not leak into earlier answers.
+Test set: at least 25 automated test questions with expected answers, run with one command. At least 5 must test whether the cockpit refuses or admits uncertainty correctly.
+Voice notes: a written response to each CEO voice note (T6a–T6d), committed by 11:59 PM on its release day. Either make the change or push back with your reasons. Agreeing to everything is not a good sign.
+Stretch: agents that keep generating plausible new activity after 31 Oct 2026, consistent with the data.
+
+5. AI use: allowed and expected
+You may use any AI assistants, models, agents or coding tools you like. The conditions:
+
+You own everything AI produces for you. "The AI wrote it" is not a defence for a wrong answer or a line you can't explain.
+Keep an AI_LOG.md: the main tasks you gave AI, where it was wrong, and what you changed. We value honest entries about AI mistakes.
+If you're shortlisted, you'll be asked in the interview to explain and change your code without AI help. Build only what you can defend.
+AI must not decide which source is true for you. Every conflict you resolve needs your own reasoning in TRANSCRIPT_NOTES.md.
+6. Required files in your repo
+README.md	What the project is, the one-command setup, and how to run the test set
+ARCHITECTURE.md	Due by 11:59 PM on Mon 16 Nov, updated as the design changes
+ASSUMPTIONS.md	Date, the assumption, the source line it rests on, confidence, and what would change your mind. Revise entries; don't delete them.
+TRANSCRIPT_NOTES.md	Suspected mishearings and contradictions, with the evidence and your conclusion
+DECISIONS.md	Choices you could defend either way: data model, storage, agent memory, what the cockpit refuses to answer
+AI_LOG.md	As described in section 5
+7. Ground rules
+Transcripts are machine-generated. Names, numbers and tools may be misheard, and speakers may be wrong or biased. Nobody will confirm or correct anything.
+The exports are more reliable than the transcripts but have quirks of their own. Some things that look like errors aren't.
+We won't answer business questions about Veloxa during the week. Decide, log your reasoning, and keep moving.
+We'll test your setup from a fresh clone using the command you submit.
+This is individual work. Please don't share materials or collaborate with other candidates.
+Good luck!
