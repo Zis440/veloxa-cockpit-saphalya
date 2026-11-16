@@ -113,3 +113,4 @@ def get_simulated_events(db_path=DB_PATH) -> List[Dict[str, Any]]:
 
 if __name__ == "__main__":
     run_simulation()
+
