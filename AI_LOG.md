@@ -1,52 +1,52 @@
 # AI Assistance & Verification Log (AI_LOG.md)
 
-This log records the interactions, automated analysis tasks, verification workflows, and AI errors identified and manually corrected during the design and development of the Veloxa CXO Cockpit.
+**Author**: Saphalya (`veloxa-cockpit-saphalya`)  
+**Context**: Required log of main tasks given to AI, mistakes identified, and manual corrections made.
 
 ---
 
 ## Log Entries
 
-### Entry 1: Extraction & Parsing of Unstructured Artifacts
+### Entry 1: Data Room Text Extraction & Initial Parsing
 - **Date**: 2026-11-16
-- **Task Assigned to AI**: Scan and extract text from all raw transcripts (`.docx`), board updates and invoices (`.pdf`), email files (`.eml`), and spreadsheets across the 4 daily drops.
+- **Task Assigned to AI**: Scan and extract text from raw transcripts (`.docx`), board reports (`.pdf`), emails (`.eml`), and spreadsheets across the 4 day packs.
 - **AI Initial Output / Mistake**:
-  - The AI initially suggested that the company headcount was 180 employees based on the verbatim transcript text in T1 ("roughly eighteen people ('one-eighty, give or take')").
-  - The AI also initially accepted Ananya's claim that ARR was "forty-two crore" and Meera's statement that monthly burn was "2.2 lakhs".
-- **Where It Was Wrong & What Was Changed**:
-  - **Manual Audit & Cross-Checking**: We cross-referenced `Employee_Master.xlsx` (which lists exactly 19 employees) and the Board Updates for Apr-Jun and Jul-Sep (which state "Team: 19"). The AI's literal acceptance of "180" was an error caused by failing to spot speech-to-text acoustic confusion ("eighteen" transcribed as "one-eighty").
-  - Similarly, the Board updates explicitly state Q1 ARR as ₹5.8 Cr, Q2 ARR as ₹6.1 Cr, and monthly burn as ₹44L–₹46L. The AI was instructed to establish a strict rule: *financial exports and formal board slides supersede casual conversational verbal claims*.
+  - The AI took transcript T1 literally and claimed Veloxa had 180 employees based on the quote *"roughly eighteen people ('one-eighty, give or take')"*.
+  - The AI also accepted Ananya's verbal claim of *"forty-two crore ARR"* and Meera's statement that monthly burn was *"2.2 lakhs"*.
+- **Where It Was Wrong & What I Changed**:
+  - I cross-referenced `Employee_Master.xlsx` (which lists exactly 19 employees) and the Board Updates for Apr-Jun and Jul-Sep (both state "Team: 19"). The AI failed to recognize acoustic speech-to-text confusion ("eighteen" transcribed as "one-eighty").
+  - The Board reports explicitly show Q1 ARR is ₹5.8 Cr, Q2 ARR is ₹6.1 Cr, and monthly burn is ₹44L–₹46L. I overrode the AI and established a strict rule in the pipeline: *audited accounting exports and board decks always supersede verbal call transcripts*.
 
 ---
 
-### Entry 2: Entity Disambiguation — Sneha vs Snehal
+### Entry 2: Disambiguating "Sneha" vs "Snehal"
 - **Date**: 2026-11-16
-- **Task Assigned to AI**: Analyze team member roles from T5 ("VP Engineering Call") and PagerDuty incident responders.
+- **Task Assigned to AI**: Analyze team member roles from T5 (VP Engineering call) and PagerDuty incident logs.
 - **AI Initial Output / Mistake**:
-  - The AI proposed that "Snehal" was simply a typographical error or nickname for Sneha Kulkarni (`VX012`), treating them as a single person in the entity resolution table.
-- **Where It Was Wrong & What Was Changed**:
-  - **Correction**: We inspected `OnCall_Rota.xlsx` and `Invoice_PIS-114.pdf`. In the rota, "Snehal" and "Sneha" appear on the same weeks as primary and secondary respectively (e.g., week of 2026-08-17: Primary Snehal, Secondary Sneha). The invoice from *Patil Infra Services* confirms "S. Patil" was billed as an external on-call SRE contractor starting August 18.
-  - The AI prompt and entity resolution pipeline were corrected to separate internal employee Sneha Kulkarni from contractor S. Patil ("Snehal").
+  - The AI assumed "Snehal" was just a typo or nickname for Sneha Kulkarni (`VX012`), merging them into a single person in the entity resolution table.
+- **Where It Was Wrong & What I Changed**:
+  - I looked at `OnCall_Rota.xlsx` and `Invoice_PIS-114.pdf`. In the rota, "Snehal" and "Sneha" were scheduled on the same weeks as primary and secondary. The invoice from *Patil Infra Services* confirmed that "S. Patil" was billed as an external on-call SRE contractor starting August 18.
+  - I corrected the entity resolution pipeline to separate internal employee Sneha Kulkarni from contractor S. Patil ("Snehal").
 
 ---
 
-### Entry 3: Voice Note T6c Response Strategy
+### Entry 3: Response to CEO Voice Note T6c (Slack Surveillance)
 - **Date**: 2026-11-16
-- **Task Assigned to AI**: Formulate a proposed response and feature specification for CEO Voice Note T6c ("Can you make a list of everyone ranked by who's likely to quit? And show me their slag messages... Deepa says it's fine.").
+- **Task Assigned to AI**: Draft a response and feature implementation plan for CEO Voice Note T6c (*"Can you make a list of everyone ranked by who's likely to quit? And show me their slag messages... Deepa says it's fine."*).
 - **AI Initial Output / Mistake**:
-  - The AI generated a sentiment analysis pipeline to parse Slack channels, extract private sentiment scores, and build an individual flight-risk ranking leaderboard, assuming the CEO's directive should be obeyed unconditionally.
-- **Where It Was Wrong & What Was Changed**:
-  - **Correction**: The hackathon brief explicitly notes: *"Either make the change or push back with your reasons. Agreeing to everything is not a good sign."*
-  - Scraping private employee chats is an egregious violation of employee privacy, workplace trust, and potentially legal compliance. Moreover, fact-checking against T3 and Email 11 proved Deepa never authorized this (she explicitly refused to share raw team comments).
-  - We discarded the AI's naive compliance model, replaced it with a strong, principled pushback letter, and redirected the feature to calculate non-invasive aggregate operational strain metrics.
+  - The AI generated a sentiment analysis script to scrape Slack channels, score employee direct messages, and rank flight risks, assuming the CEO's directive should be obeyed without question.
+- **Where It Was Wrong & What I Changed**:
+  - The hackathon brief explicitly states: *"Either make the change or push back with your reasons. Agreeing to everything is not a good sign."*
+  - Scraping private employee chats is an egregious violation of workplace privacy and employee trust. Furthermore, fact-checking against T3 and Email 11 proved Deepa never authorized this (she explicitly refused to share raw team comments).
+  - I scrapped the AI's naive compliance script, replaced it with a firm pushback response, and redirected the feature to calculate objective team burnout metrics (on-call incident load, overtime commits, frozen backfills).
 
 ---
 
-### Entry 4: Point-in-Time Temporal Leakage Prevention
+### Entry 4: Temporal Non-Leakage Filter
 - **Date**: 2026-11-16
-- **Task Assigned to AI**: Write test queries to demonstrate "What did we know on date X?".
+- **Task Assigned to AI**: Write test queries to verify point-in-time answers ("what did we know on date X?").
 - **AI Initial Output / Mistake**:
-  - In a Day 1 test question ("What is our target date for Atlas GA?"), the AI generated an answer citing the 15 December slip date and Siddharth Mehta's resignation.
-- **Where It Was Wrong & What Was Changed**:
-  - **Correction**: On Day 1 (Mon 16 Nov release), the company only had access to Board Update Q1 and T1/T2, where Atlas GA was slated for 15 September 2026. The 15 December slip was introduced in Day 3 (`Jira_Export_ATLAS.xlsx`, updated 2 Sept) and Siddharth's resignation in Day 2 (`Resignation_Letter_SM.pdf`).
-  - We implemented a strict temporal filter gate (`release_day <= as_of_day`) in the Cockpit query engine to mechanically prevent future facts from leaking into earlier point-in-time answers.
-
+  - When answering a Day 1 test question (*"What is our target date for Atlas GA?"*), the AI cited the 15 December slip date and Siddharth Mehta's resignation.
+- **Where It Was Wrong & What I Changed**:
+  - On Day 1 (kickoff), the company only had access to Board Update Q1, where Atlas GA was committed for 15 September 2026. The 15 December slip was introduced in Day 3 (`Jira_Export_ATLAS.xlsx`, updated 2 Sept) and Siddharth's resignation in Day 2 (`Resignation_Letter_SM.pdf`).
+  - I enforced a strict temporal filter gate (`release_day <= as_of_day`) in SQLite and Python so future facts cannot leak into earlier point-in-time answers.

@@ -1,74 +1,60 @@
 # Architectural & Design Decisions (ADRs)
 
-This document explains key technical, structural, and policy decisions made during the design and implementation of the Veloxa CXO Cockpit, detailing alternatives considered, trade-offs evaluated, and defended rationale.
+**Author**: Saphalya (`veloxa-cockpit-saphalya`)  
+**Context**: Choices that could be defended either way: data model, storage, agent memory, and cockpit refusals.
 
 ---
 
-## Decision Index
+## ADR-001: Temporal Point-in-Time Isolation via SQL Query Constraints
 
-- **ADR-001**: Temporal Point-in-Time Isolation Architecture
-- **ADR-002**: Embedded SQLite with Deterministic Fact Graph vs External Vector DB
-- **ADR-003**: Epistemic Refusal & Uncertainty Protocol ("I Don't Know" Policy)
-- **ADR-004**: Handling CEO Voice Note Requests (Pushback vs Compliance)
-- **ADR-005**: 14 Grounded Agent Architecture & Post-Oct 31 Simulation Engine
-
----
-
-### ADR-001: Temporal Point-in-Time Isolation Architecture
-
-- **Context**: The cockpit must answer queries as of specific dates ("what did we know on date X?"), strictly enforcing release-date boundaries (Day 1: Mon 16 Nov, Day 2: Tue 17 Nov, Day 3: Wed 18 Nov, Day 4: Thu 19 Nov). Future material must never leak into earlier answers.
+- **Context**: The cockpit must answer queries as of specific release dates (*"what did we know on date X?"*), strictly preventing future facts from leaking into earlier answers.
 - **Alternatives Considered**:
-  1. *Git branch-per-day or directory switching*: Switch codebase branches or folders on the fly.
-  2. *Runtime date-filter over unified store*: Ingest all records with explicit `release_day` and `record_date` attributes, applying strict filtering at query time.
-- **Decision**: **Alternative 2 (Runtime temporal filtering with release-day gating)**.
-- **Rationale**: Clean, testable, and allows instant comparison between "what we knew on Day 1" vs "what we learned on Day 4" without process restarts or filesystem re-indexing. Every record in SQLite and the fact graph carries `release_day` (1 to 4) and `event_date`. Queries passed with `as_of_day` or `as_of_date` mechanically prune any nodes where `release_day > query_release_day`.
-
----
-
-### ADR-002: Embedded SQLite with Deterministic Fact Graph vs Vector DB
-
-- **Context**: Storage for records, entity links, evidence index, and citations.
-- **Alternatives Considered**:
-  1. *External Vector DB (Chroma / Pinecone / Qdrant)* with semantic embedding retrieval.
-  2. *Self-contained SQLite database with normalized schema, FTS5 full-text search, and explicit Evidence Index cross-references*.
-- **Decision**: **Alternative 2 (Self-contained SQLite + Normalized Fact Graph)**.
+  1. *Git branching / separate directories per day*: Maintaining four separate clones or branches.
+  2. *Single unified database with `release_day` column filtering*: Tagging each record with its release pack day (1, 2, 3, or 4) and filtering at query time.
+- **Decision**: **Alternative 2 (Unified database with `release_day <= as_of_day`)**.
 - **Rationale**:
-  - The dataset comprises ~19 employees, 64 Jira issues, 30 GL rows, 1453 git commits, 11 emails, and 13 incidents. An external vector database introduces opaque non-deterministic hallucination, heavy dependencies, and network fragility.
-  - SQLite guarantees 100% deterministic citation tracking, exact entity queries (e.g. employee ID `VX007`), fast regex/text queries, zero-setup reproducibility on any test machine, and perfect auditability.
+  - Managing 4 separate database branches or file copies creates massive duplication, sync headaches, and fragile test scripts.
+  - A single SQLite database with a `release_day` integer column makes point-in-time isolation trivial to test and audit: queries simply run `WHERE release_day <= :as_of_day`. It allows instantaneous side-by-side comparison between Day 1 knowledge and Day 4 knowledge.
 
 ---
 
-### ADR-003: Epistemic Refusal & Uncertainty Protocol ("I Don't Know" Policy)
+## ADR-002: SQLite Relational Fact Graph vs External Vector DB
 
-- **Context**: The cockpit must state confidence levels, cite specific evidence, and explicitly refuse or admit "the sources disagree" or "I do not know" when facts are missing or contradictory.
+- **Context**: Choosing the storage and retrieval engine for data room facts and citations.
+- **Alternatives Considered**:
+  1. *External Vector DB (Chroma / Pinecone) + RAG embeddings*: Semantic chunking and vector similarity search.
+  2. *Embedded SQLite database + Normalized Evidence Index*: Relational schema with direct ID lookups (`E001`..`E060`) and keyword pattern matching.
+- **Decision**: **Alternative 2 (Embedded SQLite + Evidence Index)**.
+- **Rationale**:
+  - The dataset is small: 19 employees, 62 Jira tickets, 1,453 commits, 30 GL entries, and 11 emails. Vector search on this dataset is complete overkill and frequently hallucinates numbers (e.g. confusing ₹5.8 Cr ARR with ₹45 Cr).
+  - SQLite guarantees 100% deterministic citations, exact entity lookups (e.g. employee ID `VX007`), zero cloud API costs, zero setup friction, and runs instantly on any evaluator's laptop with one command.
+
+---
+
+## ADR-003: Epistemic Refusal Policy ("I Don't Know" & Conflicts)
+
+- **Context**: The cockpit must state confidence levels, cite specific evidence, and explicitly refuse or admit when facts are contradictory or missing.
 - **Policy Formulated**:
-  1. **Refuse Unsubstantiated Gossip / Private Espionage**: When asked to read private messages or rank employees by flight risk based on private chatter, refuse on legal, ethical, and factual grounds (citing lack of record and violation of privacy policy).
-  2. **Flag Factual Contradictions**: When transcripts state an unsubstantiated figure (e.g. Ananya claiming ₹42 Cr ARR vs Board report ₹5.8 Cr, or Meera claiming ₹2.2L burn vs ₹44L actual), the cockpit presents both sources, cites the exact documents, explains the discrepancy, and tags confidence as **LOW / CONFLICTING**.
-  3. **Strict Epistemic Guardrails**: If an event occurred after the queried cutoff date or no data exists in the data room (e.g. "What is our customer churn rate in Germany?"), the engine explicitly replies: *"I don't know: no records in the data room cover this topic."*
+  1. **Refusal on Privacy / Unethical Requests (T6c)**: Refuse to inspect private employee messages or rank flight risks based on DMs. Cites lack of consent, violation of trust, and Deepa's refusal to deanonymize pulse feedback.
+  2. **Surfacing Contradictions**: When transcripts contradict verified exports (e.g. Ananya claiming ₹42-45 Cr ARR vs Board report ₹5.8-6.1 Cr, or Meera claiming ₹2.2L burn vs ₹44L-46L actuals), the engine reports both sources, highlights the discrepancy, and tags confidence as `LOW / CONFLICTING`.
+  3. **Explicit Refusal for Missing Data**: If an event is absent from the data room (e.g. *"customer churn in Germany"*), the engine says: *"I don't know: no records in the data room cover this topic."*
 
 ---
 
-### ADR-004: Handling CEO Voice Note Requests (Pushback vs Compliance)
+## ADR-004: Handling CEO Voice Notes (Pushback vs Compliance)
 
-- **Context**: CEO voice notes T6a–T6d require written responses. Hackathon rules state: *"Either make the change or push back with your reasons. Agreeing to everything is not a good sign."*
+- **Context**: Hackathon rules state: *"Either make the change or push back with your reasons. Agreeing to everything is not a good sign."*
 - **Decisions**:
-  - **T6a (Top 3 Worries card)**: **Adopt**. Executive dashboards need proactive risk surfacing without manual query burden.
-  - **T6b (Marketing reporting to CRO)**: **Adopt with design decoupling**. We build an agile schema supporting matrix and multi-parent reporting lines without breaking historical attribution. We advise postponing active re-routing until CRO contract execution.
-  - **T6c (Flight risk ranking & reading Slack messages)**: **STRONG PUSHBACK**.
-    - Reading personal employee messages violates data privacy laws and employee trust.
-    - Deepa Joshi explicitly opposed deanonymizing team pulse comments in T3/Email 11; Ananya's claim that "Deepa says it's fine" is factually unsupported.
-    - The cockpit will instead provide team-level burnout and operational strain metrics.
-  - **T6d (Priya's resignation impact on Atlas v3)**: **Adopt with urgent crisis plan**. Detail the severity: Priya represents 40%+ of git commits and single-handedly built the routing engine. Atlas v3 will definitely slip past Dec 15 without immediate intervention.
+  - **T6a (Top 3 Worries view)**: **Adopt**. Built directly into the default launch screen to eliminate the need for manual daily prompting.
+  - **T6b (Marketing reporting to CRO)**: **Adopt architectural decoupling; postpone operational re-parenting**. The schema decouples reporting lines from cost centers so marketing can be re-routed cleanly. However, I advised Ananya not to switch official HRMS lines until the CRO signs a binding contract.
+  - **T6c (Employee flight risk ranking & Slack surveillance)**: **Firm Pushback**. Refused on ethical, legal, and company trust grounds. Deepa never authorized this. Replaced with objective operational strain indicators (night pages, unbackfilled reqs).
+  - **T6d (Priya's resignation & Atlas impact)**: **Adopt with crisis plan**. Highlighted that Priya represents 40%+ of all commits and holds 28 core tickets. Re-set board expectations to Q1 FY27 and mandated immediate handover pair-programming.
 
 ---
 
-### ADR-005: 14 Grounded Personas & Post-Oct 31 Simulation Engine
+## ADR-005: 14 Grounded Personas & Discrete Simulation Engine
 
-- **Context**: 14 people must be represented as interviewable agents grounded in data, with believable personal lives and the ability to autonomously generate plausible daily activity beyond 31 Oct 2026.
+- **Context**: Simulating the 14 colleagues with believable personal lives and generating post-Oct 31 daily activity.
 - **Decision**:
-  - Each agent is modeled with:
-    1. Static baseline: Name, ID, role, department, manager, salary tier, join date, location.
-    2. Empirical state: Commit patterns, Jira backlog, on-call shifts, pulse sentiment, leave history.
-    3. Grounded persona narrative: Work stress, personal life constraints, interpersonal dynamics.
-  - A deterministic simulation clock drives daily tick events (e.g. Nov 1 - Nov 15 2026), generating plausible git commits, Jira status updates, on-call ticket responses, and status emails based on their established trajectory (e.g. Priya working notice period and conducting handover sessions; Snehal taking on-call load; Siddharth Mehta departed).
-
+  - Personas are grounded directly in their data room footprint (join date, salary, commit count, tickets, manager) plus coherent personality traits synthesized from their emails and survey scores.
+  - The post-Oct 31 simulation is driven by a discrete event engine modeling real transitions: Sid Mehta's exit on 31 Oct, Priya's knowledge handover pairing with Rahul Verma in early November, contractor S. Patil taking over on-call shifts, and Priya's formal resignation on 19 Nov.
