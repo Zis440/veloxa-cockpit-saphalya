@@ -115,3 +115,4 @@ Priya Nair’s resignation is an immediate, tier-1 crisis for Veloxa and the Atl
    - Immediately mandate that Priya writes zero new features. 100% of her remaining time must be pair-programming with Rahul Verma and an urgent senior external contractor on graph algorithms and capacity rules.
 3. **Board Call Positioning**:
    - Do **not** promise December 15 GA. Transparently inform the board that following reliability hardening in August and key staff transition, Veloxa is shipping an Atlas Private Beta to 3 select design partners in December, with commercial GA rescheduled to **Q1 FY27 (late Feb/March 2027)** once architecture handover is complete.
+

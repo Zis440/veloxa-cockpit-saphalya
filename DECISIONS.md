@@ -71,3 +71,4 @@ This document explains key technical, structural, and policy decisions made duri
     2. Empirical state: Commit patterns, Jira backlog, on-call shifts, pulse sentiment, leave history.
     3. Grounded persona narrative: Work stress, personal life constraints, interpersonal dynamics.
   - A deterministic simulation clock drives daily tick events (e.g. Nov 1 - Nov 15 2026), generating plausible git commits, Jira status updates, on-call ticket responses, and status emails based on their established trajectory (e.g. Priya working notice period and conducting handover sessions; Snehal taking on-call load; Siddharth Mehta departed).
+

@@ -220,3 +220,4 @@ The entire cockpit, database build, test execution, and user interface are execu
 python run_cockpit.py          # Builds DB, runs verification, launches interactive cockpit
 python run_tests.py            # Executes the 25+ automated tests with report output
 ```
+

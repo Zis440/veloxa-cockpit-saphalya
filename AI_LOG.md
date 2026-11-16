@@ -49,3 +49,4 @@ This log records the interactions, automated analysis tasks, verification workfl
 - **Where It Was Wrong & What Was Changed**:
   - **Correction**: On Day 1 (Mon 16 Nov release), the company only had access to Board Update Q1 and T1/T2, where Atlas GA was slated for 15 September 2026. The 15 December slip was introduced in Day 3 (`Jira_Export_ATLAS.xlsx`, updated 2 Sept) and Siddharth's resignation in Day 2 (`Resignation_Letter_SM.pdf`).
   - We implemented a strict temporal filter gate (`release_day <= as_of_day`) in the Cockpit query engine to mechanically prevent future facts from leaking into earlier point-in-time answers.
+
