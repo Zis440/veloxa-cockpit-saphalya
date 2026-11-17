@@ -1,10 +1,11 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-env/
+
+# Distribution / packaging
 build/
 develop-eggs/
 dist/
@@ -23,16 +24,38 @@ wheels/
 
 # Virtual environments
 venv/
-ENV/
 .venv/
+env/
+ENV/
 
-# Testing & logs
+# Environment variables & secrets
+.env
+.env.*
+
+# Testing & coverage
 .pytest_cache/
+.coverage
+htmlcov/
 *.log
 
-# IDE
+# Operating System files
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDEs and Editors
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
 
+# Temporary files
+*.tmp
+scratch/
