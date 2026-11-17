@@ -113,20 +113,34 @@ def ingest_leave_and_hiring(conn):
         df = pd.read_excel(leave_path, header=2)
         df.columns = [c.strip() if isinstance(c, str) else str(c) for c in df.columns]
         cur = conn.cursor()
+        name_to_emp = {
+            "A. Das": ("VX009", "Arjun Das"),
+            "P. Nair": ("VX007", "Priya Nair"),
+            "K. Subramanian": ("VX010", "Karthik Subramanian"),
+            "F. Sheikh": ("VX014", "Fatima Sheikh"),
+            "S. Kulkarni": ("VX012", "Sneha Kulkarni"),
+            "S. Mehta": ("VX013", "Siddharth Mehta"),
+            "R. Verma": ("VX018", "Rahul Verma"),
+            "M. Iyer": ("VX003", "Meera Iyer"),
+            "V. Menon": ("VX004", "Vikram Menon"),
+            "N. Bose": ("VX006", "Nikhil Bose")
+        }
         for _, row in df.iterrows():
             emp = str(row.get("Employee", "")).strip()
             if not emp or emp == "nan":
                 continue
+            mapped_id, mapped_name = name_to_emp.get(emp, (emp, emp))
+            days = float(row.get("Days", 1)) if pd.notna(row.get("Days")) else 1.0
             cur.execute("""
                 INSERT INTO leave_records (emp_id, name, department, leave_type, start_date, days_taken, release_day)
                 VALUES (?, ?, ?, ?, ?, ?, 2)
             """, (
-                emp,
-                emp,
+                mapped_id,
+                mapped_name,
                 "Company",
                 str(row.get("Leave Type", "Annual")).strip(),
                 str(row.get("From", ""))[:10].strip(),
-                int(row.get("Days", 1)) if pd.notna(row.get("Days")) else 1
+                days
             ))
         conn.commit()
         print("Ingested Leave Register.")
@@ -168,15 +182,17 @@ def ingest_leave_and_hiring(conn):
             dept = str(row.get("Team", "")).strip()
             if not dept or dept == "nan":
                 continue
+            eng_val = row.get("Engagement (1-5)")
+            score = round(float(eng_val) * 20) if pd.notna(eng_val) else 70
             cur.execute("""
                 INSERT INTO pulse_surveys (quarter, department, favorability_pct, participation_pct, key_themes, release_day)
                 VALUES (?, ?, ?, ?, ?, 2)
             """, (
                 str(row.get("Quarter", "Q3 2026")).strip(),
                 dept,
-                int(row.get("Favorability (%)", row.get("Score (%)", 70))) if pd.notna(row.get("Favorability (%)", row.get("Score (%)", 70))) else 70,
+                int(score),
                 int(row.get("Responses", 10)) if pd.notna(row.get("Responses")) else 10,
-                str(row.get("Top Themes / Highlights", "")).strip()
+                str(row.get("Comments", "")).strip()
             ))
         conn.commit()
         print("Ingested Pulse Surveys.")

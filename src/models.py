@@ -126,7 +126,7 @@ CREATE TABLE leave_records (
     department TEXT NOT NULL,
     leave_type TEXT NOT NULL,
     start_date TEXT NOT NULL,
-    days_taken INTEGER NOT NULL,
+    days_taken REAL NOT NULL,
     release_day INTEGER NOT NULL DEFAULT 2
 );
 
