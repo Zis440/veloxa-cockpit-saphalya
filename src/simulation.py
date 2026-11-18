@@ -4,7 +4,7 @@ Generates plausible, chronologically consistent activities across Git, Jira, On-
 for the 14 agents beyond the historical October 2026 cutoff.
 """
 import sqlite3
-from typng import List, Dict, Any
+from typing import List, Dict, Any
 from src.models import get_db, DB_PATH
 
 POST_OCT31_EVENTS: List[Dict[str, Any]] = [
