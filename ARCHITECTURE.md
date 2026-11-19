@@ -193,4 +193,4 @@ python run_tests.py
 - **Tests 06–10**: Temporal non-leakage (Day 1 cannot see Day 3/4 events).
 - **Tests 11–20**: Fact verification (19 employees, Snehal contractor resolution, Feb payroll error, 62 Jira tickets, 1,453 commits, 60 evidence facts).
 - **Tests 21–23**: Grounded persona interviews (Priya, Deepa, Rahul).
-- **Tests 24–25**: Post-Oct 31 simultion chronological validation.
+- **Tests 24–25**: Post-Oct 31 simulation chronological validation.
