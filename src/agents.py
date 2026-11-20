@@ -306,6 +306,55 @@ class AgentManager:
                 f"I finished the Atlas v1 launch kit—deck, landing page, customer sequences—on 21 July. Month after month, engineering slipped. "
                 f"My last day is 31 October. As a product marketer, you can't build momentum if the product never launches."
             )
+        elif "sneha" in persona["name"].lower() and ("incident" in p_lower or "on-call" in p_lower or "rota" in p_lower or "sev1" in p_lower or "snehal" in p_lower or "patil" in p_lower or "sleep" in p_lower):
+            response_text = (
+                f"August was brutal. We suffered three SEV1 outages on routing-api (INC-201 at 5 AM, INC-203, and INC-205). We had to pause Atlas performance tickets "
+                f"just to stabilize the cluster. Bringing in S. Patil from Patil Infra Services to take over the primary on-call rotation saved my sanity. "
+                f"I am finally getting uninterrupted sleep, but the underlying API reliability still needs permanent architectural fixes."
+            )
+        elif "nikhil" in persona["name"].lower() and ("summit" in p_lower or "marketing" in p_lower or "cro" in p_lower or "spend" in p_lower or "leads" in p_lower or "manoj" in p_lower or "pipeline" in p_lower):
+            response_text = (
+                f"The September Logistics Summit drew 212 qualified registrations and put Veloxa on the map. Finance looks at event vouchers like JV-0925 and calls it expensive, "
+                f"but enterprise logistics pipeline takes time to convert. As for the rumors about reporting to a new CRO, I welcome commercial leadership, provided our "
+                f"reporting lines and budget boundaries are clearly defined."
+            )
+        elif "arjun" in persona["name"].lower() and ("remote" in p_lower or "pune" in p_lower or "rto" in p_lower or "office" in p_lower or "ui" in p_lower or "frontend" in p_lower):
+            response_text = (
+                f"Working remotely from Pune has allowed me to care for my parents while shipping over 300 commits to planner-web. The Atlas UI is completely responsive "
+                f"and ready; what we are waiting on is the core backend routing heuristics to stabilize. I formally requested permanent remote status in September (Email 10), "
+                f"and I am always glad to fly to Bengaluru for major milestone demos."
+            )
+        elif "fatima" in persona["name"].lower() and ("zoho" in p_lower or "ledger" in p_lower or "vendor" in p_lower or "patil" in p_lower or "payroll" in p_lower or "wedding" in p_lower):
+            response_text = (
+                f"Every transaction in Zoho Books is reconciled to the rupee, including Patil Infra Services under Invoice PIS-114. Regarding February payroll: "
+                f"I was away on wedding leave, and Karthik processed the batch without pro-rating Rahul Verma's start date. When Rahul brought it to my attention, "
+                f"I noted it for reconciliation."
+            )
+        elif "karthik" in persona["name"].lower() and ("cfa" in p_lower or "payroll" in p_lower or "rahul" in p_lower or "burn" in p_lower or "runway" in p_lower or "fp&a" in p_lower):
+            response_text = (
+                f"I made an honest administrative oversight in February when covering for Fatima—I used the January base sheet and omitted pro-rating Rahul's days. "
+                f"On the macro side, our gross burn is ~₹45L/month, giving us roughly 13 to 14 months of runway. Managing burn strictly is the only way we reach the Series A close safely."
+            )
+        elif "aisha" in persona["name"].lower() and ("ads" in p_lower or "google" in p_lower or "cac" in p_lower or "growth" in p_lower or "funnel" in p_lower):
+            response_text = (
+                f"Our Google Ads campaigns run at ₹76K to 84K per month, delivering predictable mid-market customer acquisition at a solid CAC. Flashy events like the Summit "
+                f"generate buzz, but performance marketing is what reliably fills our top-of-funnel pipeline week after week."
+            )
+        elif "rohan" in persona["name"].lower() and ("hiring" in p_lower or "recruiting" in p_lower or "req" in p_lower or "backend" in p_lower or "freeze" in p_lower):
+            response_text = (
+                f"Recruiting top-tier distributed systems engineers is fiercely competitive. We had promising candidates in late-stage rounds for REQ-014 and REQ-015 "
+                f"when Finance put the freeze in place on 12 August. Having to tell those candidates we were pausing the roles was deeply painful."
+            )
+        elif "lakshmi" in persona["name"].lower() and ("office" in p_lower or "culture" in p_lower or "keka" in p_lower or "leave" in p_lower or "sid" in p_lower):
+            response_text = (
+                f"I manage our Keka leave registers and operational onboarding/offboarding. When Siddharth Mehta submitted his resignation in September, I ensured his exit paperwork "
+                f"and handover checklists for marketing were fully documented. Engineering has been under obvious strain lately."
+            )
+        elif "ananya" in persona["name"].lower() and ("vision" in p_lower or "series a" in p_lower or "board" in p_lower or "atlas" in p_lower or "worry" in p_lower):
+            response_text = (
+                f"We are 19 people building mission-critical routing intelligence. We committed Atlas v3 for the festive season to our anchor logistics clients. "
+                f"I need unvarnished ground truth from my leadership team, not sugarcoated delay notices. Engineering velocity and customer delivery are everything right now."
+            )
         else:
             response_text = (
                 f"Speaking as {persona['name']} ({persona['role']}, {persona['dept']}): "

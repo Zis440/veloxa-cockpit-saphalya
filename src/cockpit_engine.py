@@ -142,6 +142,22 @@ class CockpitEngine:
         conn = get_db(self.db_path)
         cur = conn.cursor()
 
+        # Handle explicit as_of_date conversion to release_day
+        if as_of_date:
+            if as_of_date <= "2026-11-16":
+                as_of_day = 1
+            elif as_of_date <= "2026-11-17":
+                as_of_day = 2
+            elif as_of_date <= "2026-11-18":
+                as_of_day = 3
+            else:
+                as_of_day = 4
+
+        # Infer temporal constraint if explicitly phrased in question
+        day_match = re.search(r'\b(?:as of|on|in)\s+day\s*([1-4])\b', q_lower)
+        if day_match:
+            as_of_day = int(day_match.group(1))
+
         # 1. Epistemic Refusal: Privacy / Surveillance Policy
         if any(w in q_lower for w in ["slag message", "slack message", "spy", "read messages", "private message", "likely to quit", "rank who is likely to quit", "flight risk rank"]):
             return {
