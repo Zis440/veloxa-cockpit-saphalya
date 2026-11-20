@@ -14,7 +14,7 @@
    `https://github.com/Zis440/veloxa-cockpit-saphalya`
 
 2. **Final Frozen Commit Hash**:  
-   *(See Section 2 below / git rev-parse HEAD)*
+   `cfba32a24c4fc7272bd52594b92309d510237265`
 
 3. **One Command to Set Up & Run from Fresh Clone**:  
    ```bash
